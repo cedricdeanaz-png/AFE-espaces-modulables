@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Espaces modulables · 2 et 3 novembre 2026</title>
 <style>
 :root{
@@ -343,6 +346,11 @@ table.t td:first-child{font-weight:700;color:var(--navy);background:#FAFBFD}
 .grp ol{margin:0;padding-left:17px;font-size:14px}
 
 /* ---- références des apports ---- */
+.pq{border:1px solid var(--mid);border-left:5px solid var(--navy);border-radius:0 6px 6px 0;
+  padding:12px 15px;margin:4px 0 14px;background:#FBFCFE}
+.pq>b{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px}
+.pq p{margin:0;font-size:13.5px;line-height:1.6;color:#2A3340}
+.pq p b{color:var(--navy)}
 .refs{border:1px solid var(--mid);border-left:5px solid var(--red);border-radius:0 6px 6px 0;
   padding:11px 14px;margin:4px 0 14px;background:#fff}
 .refs>b{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px}
@@ -380,7 +388,15 @@ h5.mur{margin:18px 0 6px;font-size:12px;letter-spacing:1.4px;text-transform:uppe
 .notes{display:grid;gap:9px}
 .ntrow{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .ntrow>b{flex:0 0 112px;font-size:11.5px;color:var(--navy);text-transform:uppercase;letter-spacing:.8px}
-.ntrow input{width:42px;text-align:center;padding:5px 2px;font-size:13px}
+.ntrow input{width:52px;text-align:center;padding:5px 2px;font-size:13px}
+.ntc{display:inline-flex;flex-direction:column;align-items:center;gap:2px}
+.ntc em{font-size:9.5px;color:var(--grey);font-style:normal;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.1}
+.ntcmpb{margin:16px 0 0 112px;background:var(--gbg);border:1px solid #BFE3D5;border-radius:var(--r);padding:13px 16px}
+.ntcmpr{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:3px 0;font-size:13px}
+.ntcmpr span{color:var(--grey)}
+.ntcmpr b{color:var(--navy);font-size:14px}
+.ntcmpb p{margin:9px 0 0;font-size:13px;color:#2A3340;line-height:1.5}
+.ntcmpb p b{color:var(--green)}
 .ntstat{font-size:13px;color:#39414E;margin:2px 0 0 112px}
 .ntstat b{color:var(--navy)}
 .ntbar{position:relative;height:16px;background:var(--light);border-radius:8px;margin:5px 0 0 112px;overflow:hidden}
@@ -1383,6 +1399,7 @@ const J2M = {
    {d:"5 min", t:"La copie : vous la notez d'abord <b>sans critères</b>, en une minute, sans relire et sans en parler à votre voisin. Nous relevons les douze notes."},
    {d:"4 min", t:"On ouvre les quatre critères, chacun renote, et nous relevons les douze notes du second tour."},
    {t:"Le groupe n'a réussi l'énigme que lorsque <b>chacun</b> de ses membres peut expliquer la solution entière."}],
+  pourquoi:"Deux expériences, et une seule idée : <b>ce qui est rendu public change ce que les gens font</b>. Dans l'énigme, l'information est répartie, personne ne peut finir seul, et la coopération devient une nécessité de la tâche plutôt qu'une consigne. Dans la copie, les critères sont d'abord privés — chacun les a dans la tête, et nos douze notes divergent — puis rendus publics, et l'écart se resserre sous nos yeux. La matinée entière tient là-dessus : on ne décrète pas la coopération, on la rend nécessaire ; on ne demande pas l'autonomie, on publie ce qui permet de s'en passer. Et cela se joue dans l'aménagement : une tâche qui oblige à parler ne tient pas en rangs d'oignons, une grille qui doit être lue pendant le travail ne tient pas dans un classeur.",
   enigme:true, copie:true, refs:COPIE_REFS},
 
  {h:"8 h 55", d:30, type:"atelier", t:"Faire évaluer par les élèves : trois protocoles",
@@ -1809,9 +1826,10 @@ function wEnigme(){
    <div class="trifin" id="enigFin">${esc(ENIGME_FIN)}</div></div>`;
 }
 
+function ntNom(i){const n=(F["NM-"+i]||"").trim();return n?n:"";}
 function wCopie(){
   const row=(p,lbl)=>`<div class="ntrow"><b>${lbl}</b>${
-    Array.from({length:15},(_,i)=>`<input type="number" min="0" max="20" step="0.5" data-f="${p}-${i}" data-nt="1">`).join("")}</div>
+    Array.from({length:15},(_,i)=>`<span class="ntc"><input type="number" min="0" max="20" step="0.5" data-f="${p}-${i}" data-nt="1"><em>${esc(ntNom(i))}</em></span>`).join("")}</div>
    <div class="ntbar" id="bar-${p}"></div><p class="ntstat" id="st-${p}">—</p>`;
   return `<div class="mine"><h4>La copie</h4>
    <p class="ctit">${esc(COPIE_T)}</p>
@@ -1824,8 +1842,18 @@ function wCopie(){
    <div class="acts" style="margin-top:10px"><button class="btn sm" id="critGo">Ouvrir les quatre critères</button></div>
    <div class="critbox" id="critbox">${COPIE_CRIT.map((c,i)=>`<div><h6>${i+1}. ${esc(c.t)}</h6><p>${esc(c.d)}</p></div>`).join("")}</div>
    <h5 class="mur">Le relevé de la salle</h5>
-   <p class="hint">À projeter. On saisit les notes des deux tours, l'écart se calcule tout seul.</p>
+   <p class="hint">À projeter. Deux façons de le remplir : vous saisissez les notes au fil des réponses, ou vous chargez les contributions déposées et elles se rangent toutes seules.</p>
+   <div class="row" style="margin:0 0 12px"><button class="btn solid sm" id="ntPick">Charger les contributions</button>
+     <button class="btn gh sm" id="ntRaz">Vider le relevé</button>
+     <input type="file" id="ntFiles" accept="application/json,.json" multiple hidden>
+     <span id="ntmsg" class="idmsg"></span></div>
    <div class="notes">${row("NA","Sans critères")}${row("NB","Avec la grille")}</div>
+   <div id="ntcmp"></div>
+   <h5 class="mur">Et dans cette salle</h5>
+   <p class="hint">Une grille ne produit cet effet que si l'élève l'a sous les yeux pendant qu'il travaille, et sans vous la demander.</p>
+   <div class="cols2">
+     <div><label ${LBL}>Où cette grille est affichée, dans ma salle</label>${ta("CP-ou","Au mur, sur l'ENI, dans la pochette, sur le plan de travail…",70)}</div>
+     <div><label ${LBL}>À quel moment l'élève la lit, et ce qu'il en fait</label>${ta("CP-qd","Avant de commencer, à mi-parcours, pour corriger un pair…",70)}</div></div>
    <div class="cle" style="margin-top:14px"><b>CE QUE L'ÉCART NOUS APPREND</b>${COPIE_FIN}</div></div>`;
 }
 
@@ -2079,6 +2107,7 @@ function card(s,ji,si){
     if(/^[a-zàâçéèêëîïôûùüÿœæ]/.test(t))t=t.charAt(0).toUpperCase()+t.slice(1);
     return `<li>${d?`<span class="jd">${esc(d)}</span>`:`<span class="jd np">règle</span>`}<span class="jt2">${t}</span></li>`;
   }).join("")}</ul></div>`;
+  if(s.pourquoi) b+=`<div class="pq"><b>Pourquoi cette activité, ici</b><p>${s.pourquoi}</p></div>`;
   if(s.refs) b+=`<div class="refs"><b>Les références</b><ul>${s.refs.map(r=>`<li>${r}</li>`).join("")}</ul></div>`;
   if(s.form==="ressources") b+=wRessources(k);
   if(s.leviers) b+=wLeviers();
@@ -2197,7 +2226,9 @@ function txt(ji,si,s){
       if(p!==undefined&&p!=="")a.push("• "+c+" : "+ENIGME_PROF[+p]+((d!==undefined&&d!=="")?" · "+ENIGME_DISP[+d]:""));});
     if(a.length)L.push(a.join("\n"));}
   if(s.copie){if(V("N1").trim())L.push("Ma note sans critères : "+V("N1"));
-    if(V("N2").trim())L.push("Ma note avec la grille : "+V("N2"));}
+    if(V("N2").trim())L.push("Ma note avec la grille : "+V("N2"));
+    if(V("CP-ou").trim())L.push("Où la grille est affichée, dans ma salle : "+V("CP-ou").trim());
+    if(V("CP-qd").trim())L.push("Quand l'élève la lit, et ce qu'il en fait : "+V("CP-qd").trim());}
   if(s.radar){if(V("RC-classe").trim())L.push("La classe : "+V("RC-classe").trim());
     const a=[];COOP_CRIT.forEach((c,i)=>{const v=F["RC-"+i];
       if(v!==undefined&&v!=="")a.push("• "+c.t+" : "+COOP_NIV[+v]);});
@@ -2519,6 +2550,46 @@ function statNotes(){
     if(bar)bar.innerHTML=`<i style="left:${(mn/20*100).toFixed(1)}%;width:${Math.max(1,(mx-mn)/20*100).toFixed(1)}%"></i>`+
       `<u style="left:${(mo/20*100).toFixed(1)}%"></u>`;
   });
+  ntCmp();
+}
+function ntVals(p){const v=[];for(let i=0;i<15;i++){const x=F[p+"-"+i];if(x!==undefined&&x!=="")v.push(+x);}return v;}
+function ntCmp(){
+  const box=document.getElementById("ntcmp"); if(!box)return;
+  const a=ntVals("NA"),b=ntVals("NB");
+  if(a.length<2||b.length<2){box.innerHTML="";return;}
+  const et=v=>Math.max.apply(null,v)-Math.min.apply(null,v);
+  const ea=et(a),eb=et(b),d=ea-eb;
+  const pc=ea?Math.round(d/ea*100):0;
+  const msg = d>0
+    ? "L'étendue s'est resserrée de <b>"+d.toFixed(1)+" points</b>, soit "+pc+" %. Ce n'est pas la copie qui a changé : c'est que nous avons regardé la même chose. Voilà ce qu'une grille partagée fait au jugement — et voilà, du même coup, ce que l'élève gagne à l'avoir avant de rendre, et non après."
+    : d===0
+    ? "L'étendue n'a pas bougé. Deux lectures possibles : la grille redit ce que vous faisiez déjà implicitement, ou elle est trop lâche pour trancher. Regardez sur quel critère vous divergez encore."
+    : "L'étendue s'est <b>élargie</b> de "+Math.abs(d).toFixed(1)+" points. C'est rare et instructif : la grille a rendu visible un désaccord que la note globale masquait. C'est précisément ce qu'elle doit faire.";
+  box.innerHTML=`<div class="ntcmpb">
+    <div class="ntcmpr"><span>Sans critères</span><b>${ea.toFixed(1)} pts d'étendue</b></div>
+    <div class="ntcmpr"><span>Avec la grille</span><b>${eb.toFixed(1)} pts d'étendue</b></div>
+    <p>${msg}</p></div>`;
+}
+async function ntAdd(files){
+  let n=0,bad=0,i=0;
+  const lus=[];
+  for(const f of Array.from(files)){
+    try{const G=JSON.parse(await f.text());
+      const nom=((G["ID-p"]||"")+" "+(G["ID-n"]||"")).trim()||f.name.replace(/\.json$/i,"");
+      lus.push({nom:nom,a:G["N1"],b:G["N2"]}); n++;
+    }catch(e){bad++;}
+  }
+  lus.sort((x,y)=>x.nom.localeCompare(y.nom,"fr"));
+  for(let k=0;k<15;k++){delete F["NA-"+k];delete F["NB-"+k];delete F["NM-"+k];}
+  lus.forEach(x=>{if(i>=15)return;
+    if(x.a!==undefined&&x.a!=="")F["NA-"+i]=x.a;
+    if(x.b!==undefined&&x.b!=="")F["NB-"+i]=x.b;
+    F["NM-"+i]=x.nom.split(" ")[0]||x.nom; i++;});
+  saveF();
+  const box=document.querySelector(".mine .notes");
+  if(box){const card=box.closest(".mine");card.outerHTML=wCopie();fillF();statNotes();}
+  const m=document.getElementById("ntmsg");
+  if(m)m.textContent=n+" contribution"+(n>1?"s":"")+" chargée"+(n>1?"s":"")+(bad?" : "+bad+" fichier illisible":"");
 }
 
 /* ---- minuteur : il reste dans le bouton ---- */
@@ -2589,6 +2660,7 @@ document.addEventListener("change",e=>{
   if(el&&(el.type==="checkbox"||el.tagName==="SELECT"||el.type==="date"))onField(el);
   if(e.target.id==="mgFiles"){const t=e.target;if(t.files.length)addMerge(t.files).then(()=>{t.value="";});return;}
   if(e.target.id==="pcFiles"){const t=e.target;if(t.files.length)passAdd(t.files).then(()=>{t.value="";});return;}
+  if(e.target.id==="ntFiles"){const t=e.target;if(t.files.length)ntAdd(t.files).then(()=>{t.value="";});return;}
   if(e.target.id==="fileJson"){const t=e.target,f=t.files[0];if(!f)return;
     f.text().then(x=>{try{F=Object.assign({},F,JSON.parse(x));saveF();render();fillF();renderCarnet();renderMerge();msg("Importé.");}
       catch(err){msg("Fichier illisible.");}}).catch(()=>msg("Fichier illisible.")).then(()=>{t.value="";});}
@@ -2699,6 +2771,11 @@ document.addEventListener("click",e=>{
   if(e.target.id==="imJson"){document.getElementById("fileJson").click();return;}
   if(e.target.id==="mgPick"){document.getElementById("mgFiles").click();return;}
   if(e.target.id==="pcPick"){document.getElementById("pcFiles").click();return;}
+  if(e.target.id==="ntPick"){document.getElementById("ntFiles").click();return;}
+  if(e.target.id==="ntRaz"){for(let k=0;k<15;k++){delete F["NA-"+k];delete F["NB-"+k];delete F["NM-"+k];}
+    saveF();const b=document.querySelector(".mine .notes");
+    if(b){const c=b.closest(".mine");c.outerHTML=wCopie();fillF();statNotes();}
+    const m=document.getElementById("ntmsg");if(m)m.textContent="Relevé vidé.";return;}
   if(e.target.id==="pcRaz"){PASSC=[];passRender();
     const m=document.getElementById("pcmsg");if(m)m.textContent="Vidé.";return;}
   if(e.target.id==="mgMd"){if(!MERGE.length){msg2("Aucun fichier déposé.");return;}
