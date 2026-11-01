@@ -296,6 +296,45 @@ table.t td:first-child{font-weight:700;color:var(--navy);background:#FAFBFD}
 .gen{background:#fff;border:1px solid var(--mid);border-radius:var(--r);padding:18px;margin-bottom:24px;box-shadow:var(--sh)}
 .gen label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
 .gen textarea{min-height:110px;resize:vertical}
+.passw{overflow-x:auto;margin-top:14px}
+.passt{width:100%;border-collapse:collapse;font-size:13.5px;min-width:580px}
+.passt th{background:var(--light);color:var(--navy);font-size:11px;letter-spacing:1px;text-transform:uppercase;
+  padding:9px 10px;text-align:left;border:1px solid var(--mid);white-space:nowrap}
+.passt td{border:1px solid var(--mid);padding:9px 10px;vertical-align:middle}
+.passt .pr1 td:first-child{width:34%}
+.passt .pr1 b{color:var(--navy);display:block;font-size:13.5px}
+.passt .ph{display:block;font-size:11.5px;color:var(--grey);margin-top:3px;font-style:italic}
+.passt .pc{text-align:center}
+.passt .pc select{width:100%;min-width:106px}
+.passt .pr2 td{border-top:0;padding:0 10px 9px;background:#FBFCFE}
+.passt .pr2 textarea{margin:0}
+.passb{margin-top:18px;background:#FBFCFE;border:1px solid var(--mid);border-radius:var(--r);padding:14px 16px}
+.passbh{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);font-weight:700;margin-bottom:12px}
+.passbr{display:flex;gap:10px;align-items:flex-end}
+.passbc{flex:1;text-align:center}
+.passbv{height:76px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:6px}
+.passbv span{display:block;width:62%;background:linear-gradient(180deg,var(--blue),var(--navy));border-radius:4px 4px 0 0}
+.passbc b{display:block;font-size:12.5px;color:var(--navy)}
+.passbc i{display:block;font-size:11px;color:var(--grey);font-style:normal}
+.passmc{margin-top:20px;border-top:2px solid var(--light);padding-top:16px}
+.passmch b{color:var(--navy);font-size:14px}
+.passmch span{display:block;font-size:12.5px;color:var(--grey);margin-top:2px}
+.pcol{margin-top:14px}
+.pcq{text-align:center}
+.pcv{display:inline-block;font-weight:700;font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--light);color:var(--navy)}
+.pcv.v0{background:#FDECEC;color:var(--red)}
+.pcv.v1{background:var(--light);color:var(--navy)}
+.pcv.v2{background:var(--gbg);color:var(--green)}
+.pct{display:block;font-size:11px;color:var(--grey);margin-top:3px}
+.pcl{margin:0;padding-left:17px;font-size:12.5px;color:#39414E}
+.pcl li{margin:3px 0}
+.pcl b{color:var(--navy)}
+.impr{display:flex;flex-direction:column;gap:2px;margin-top:14px}
+.imprl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--light)}
+.imprl:first-child{border-top:0}
+.imprt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.imprt b{font-size:14px;color:var(--navy)}
+.imprt span{font-size:12px;color:var(--grey)}
 .gen .row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
 .gen select{width:auto}
 .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}
@@ -583,6 +622,8 @@ footer{border-top:1px solid var(--mid);padding:22px 0 60px;font-size:13px;color:
    =================================================================== */
 
 const MIRO = "https://miro.com/app/board/uXjVEW949to=/";
+const SITE_URL = "https://cedricdeanaz-png.github.io/AFE-espaces-modulables/";
+const DRIVE_URL = "https://drive.google.com/drive/folders/1bY6TwRd_LBIa7bxZdoRxGrdldQdovweq?usp=sharing";
 
 const EQUIPES = [
  {n:"Équipe 1", obj:["apport","approprier","remedier"]},
@@ -714,7 +755,7 @@ const J1M = {
   regles:["Une ressource, ce n'est pas seulement du mobilier : les murs, le tableau, le couloir, la lumière, le rangement, les prises en sont aussi.",
           "Cinq au minimum, pas de maximum.",
           "Au tour de salle : une phrase chacun."],
-  form:"ressources", livret:"Fiche 2"},
+  form:"ressources", livret:"Fiche 1"},
 
  {h:"8 h 45", d:40, type:"atelier", t:"Identifier nos préoccupations dans cette salle",
   consigne:"Sur la planche Miro : quelles sont vos préoccupations avec vos élèves, dans cette salle ? Un post-it par préoccupation, à la première personne.",
@@ -725,7 +766,7 @@ const J1M = {
   regles:["Mode privé pendant les dix premières minutes : sans cela, les trois premiers post-it décident de tout.",
           "On ne défend pas son post-it pendant le regroupement.",
           "Un post-it vert vous engage à expliquer la pratique si on vous la demande."],
-  miro:true, depot:"La restitution produite par l'IA de Miro", livret:"Fiche 1"},
+  miro:true, depot:"La restitution produite par l'IA de Miro", livret:"Fiche 2"},
 
  {h:"9 h 25", d:20, type:"apport", t:"Le quiz des idées reçues",
   consigne:"Chacun joue seul sur son appareil. Quand tout le monde a terminé, on révèle les réponses et on en discute une par une.",
@@ -757,13 +798,13 @@ const J1M = {
 
  {h:"11 h 00", d:60, type:"atelier", t:"Quatre dispositifs coopératifs : ce qu'ils valent vraiment",
   consigne:"Vous allez vivre une classe puzzle. Chacun devient expert d'un dispositif. Ce que vous préparez n'est pas sa description, c'est son analyse.",
-  etapes:["20 min : groupes d'experts. La fiche du dispositif est dans votre livret : vous ne la recopiez pas, vous la dépassez. Vous remplissez ci-dessous : points forts · limites · disposition qu'il engendre · matériel · modalité d'activité où il sert.",
+  etapes:["20 min : groupes d'experts. La fiche du dispositif est à l'écran : vous ne la recopiez pas, vous la dépassez. Vous remplissez ci-dessous : points forts · limites · disposition qu'il engendre · matériel · modalité d'activité où il sert.",
           "25 min : groupes mixtes, un expert de chaque dispositif. Cinq minutes chacun, sur l'analyse et non sur le fonctionnement.",
           "15 min : chaque groupe choisit le dispositif qu'il installerait en premier, et dit pourquoi."],
-  regles:["On ne recopie pas la fiche du livret.",
+  regles:["On ne recopie pas la fiche : on écrit ce que le dispositif vaut, et ce qu'il exige de la salle.",
           "Chaque limite énoncée doit être vécue ou prévisible, pas théorique.",
           "Chaque disposition proposée doit être réalisable dans cette salle."],
-  dispos:true, livret:"Fiche 4"},
+  dispos:true, livret:"Fiche 3"},
 
  {h:"12 h 00", d:30, type:"bilan", t:"La table de correspondance",
   consigne:"On remplit ensemble le tableau qui servira de grille d'écriture jusqu'à demain soir. Vous le complétez chacun sur votre appareil.",
@@ -771,7 +812,7 @@ const J1M = {
           "Pour chacune : la modalité ou le dispositif qui y répond, la disposition de salle, le matériel, et ce par quoi vous commencez dans votre classe.",
           "Demain après-midi, chaque moment de votre séquence devra pouvoir se lire dans ce tableau."],
   regles:["Une seule ligne par préoccupation.","La dernière colonne est un geste précis, pas une intention."],
-  tablecorr:true, livret:"Fiche 3"}
+  tablecorr:true, livret:"Fiche 2"}
  ]
 };
 
@@ -827,8 +868,23 @@ const TRI3 = [
 ];
 const TRI3_FIN = "Un plan de travail simple rend le travail lisible. Un plan de travail élaboré rend des chemins différents réellement tenables. Quatre choses séparent le second du premier : une marge de décision laissée à l'élève, un étayage accessible sans vous, le critère de réussite énoncé avant, et quelque chose de prévu pour ceux qui terminent.";
 
+/* ---- lundi 14 h 15 : la passation, quatre critères × quatre niveaux ---- */
+const PASS_CRIT = [
+ {k:"ordre",  t:"Qui fixe l'ordre des tâches",
+  h:"L'élève suit-il une suite imposée, ou choisit-il par où il commence ?"},
+ {k:"oblig",  t:"Qui décide de ce qui est obligatoire",
+  h:"Le statut de chaque tâche est-il donné, négocié, ou choisi ?"},
+ {k:"aide",   t:"Qui donne l'aide",
+  h:"L'aide passe-t-elle par vous, ou l'élève l'atteint-il sans vous ?"},
+ {k:"ech",    t:"Qui fixe les échéances",
+  h:"Une seule date pour tous, des jalons, ou l'élève répartit-il son temps ?"}
+];
+const PASS_NIV = ["6e","3e","2de","Terminale"];
+const PASS_REP = ["L'enseignant","Les deux","L'élève"];
+const PASS_FIN = "Ce qui se transfère n'est pas le travail, c'est la décision. Et le transfert n'est jamais gratuit : chaque cran rendu à l'élève suppose qu'on ait installé avant ce qui le rend tenable, un étayage qu'il atteint sans nous et un critère de réussite énoncé avant la tâche.";
+
 const PLANS = [
- {f:"plans/plan-de-travail-6e-francais.docx", n:"6e", d:"Français : Récits de création",
+ {f:"plan-de-travail-6e-francais.docx", n:"6e", d:"Français : Récits de création",
   per:"4 séances sur une semaine", ouv:"Très cadré : les élèves découvrent le dispositif",
   obj:["raconter à l'oral un récit de création lu","repérer les trois étapes d'un récit de création","écrire un court récit en respectant ces trois étapes"],
   t:[["Lire le texte « La naissance du monde »","Obligatoire","Version audio dans le casier de la classe","Tu peux redire l'histoire sans le texte"],
@@ -837,7 +893,7 @@ const PLANS = [
      ["Écrire ton récit en dix lignes","Obligatoire","Trame d'écriture dans la pochette verte","Les trois étapes y sont, dans l'ordre"],
      ["Illustrer ton récit, ou l'enregistrer","Au choix","Coin enregistrement près de la porte","La même histoire que ton texte"]],
   note:"L'ordre est imposé, tout est obligatoire sauf la dernière tâche, l'aide est fléchée nommément. C'est la forme à utiliser la première fois."},
- {f:"plans/plan-de-travail-3e-histoire-geo.docx", n:"3e", d:"Histoire-géographie : La France et l'UE",
+ {f:"plan-de-travail-3e-histoire-geo.docx", n:"3e", d:"Histoire-géographie : La France et l'UE",
   per:"5 séances sur deux semaines", ouv:"Intermédiaire : deux tâches sur six au choix",
   obj:["situer et caractériser l'Union européenne","expliquer deux effets de l'appartenance à l'UE sur un territoire","confronter deux documents en désaccord","rédiger un paragraphe argumenté"],
   t:[["Carte : États membres et dates d'adhésion","Obligatoire","Atlas et fond de carte au poste « sources »","Légende organisée, trois vagues d'élargissement citées"],
@@ -847,7 +903,7 @@ const PLANS = [
      ["Paragraphe argumenté","Obligatoire","Critères affichés depuis le début de la séquence","Les quatre critères affichés sont respectés"],
      ["Défi : trois questions pour le quiz final","Au choix","—","Une bonne réponse, deux distracteurs plausibles"]],
   note:"L'ordre est conseillé mais non imposé, les corrigés sont en libre accès, et le tutorat est inscrit au tableau de bord."},
- {f:"plans/plan-de-travail-2de-maths.docx", n:"2de", d:"Mathématiques : Fonctions affines",
+ {f:"plan-de-travail-2de-maths.docx", n:"2de", d:"Mathématiques : Fonctions affines",
   per:"6 séances sur deux semaines", ouv:"Par paliers : on ne passe au suivant qu'après validation",
   obj:["reconnaître une fonction affine et déterminer son expression","la représenter graphiquement","résoudre équations et inéquations du premier degré","modéliser une situation concrète"],
   t:[["Palier 1 : Reconnaître et calculer","Obligatoire","Fiche-méthode · corrigés en libre accès","8 items sur 10 au test d'auto-contrôle en ligne"],
@@ -857,7 +913,7 @@ const PLANS = [
      ["Palier 5 : Systèmes et optimisation","Au choix","Énoncés au mur","Solution rédigée, lisible par un camarade"],
      ["Tutorat : valider le palier d'un camarade","Au choix","Grille de tuteur, pochette verte","Il a validé, et il sait expliquer son erreur"]],
   note:"Les paliers créent la progressivité, les corrigés sont libres, et le tutorat est un rôle inscrit et visible."},
- {f:"plans/plan-de-travail-terminale-svt.docx", n:"Term.", d:"Spécialité SVT : Climats passés, climat futur",
+ {f:"plan-de-travail-terminale-svt.docx", n:"Term.", d:"Spécialité SVT : Climats passés, climat futur",
   per:"trois semaines, échéances posées par l'élève", ouv:"Ouvert : l'élève construit son itinéraire",
   obj:["exploiter des indices paléoclimatiques","relier insolation, gaz à effet de serre et températures","discuter la portée et les limites d'un modèle","construire et défendre une argumentation"],
   t:[["Ressources : trois dossiers, six capsules, deux jeux de données","Libre","Parcours en ligne, section ressources","Vous savez dire ce que chacune vous a apporté"],
@@ -982,10 +1038,12 @@ const J1A = {
 
  {h:"14 h 15", d:15, type:"atelier", t:"Quatre plans de travail, de la 6e à la terminale",
   consigne:"Qu'est-ce que l'enseignant cesse de décider à la place de l'élève, lorsqu'on passe de la 6e à la terminale ?",
-  etapes:["10 min : lecture à deux : un plan chacun, puis vous échangez.",
-          "5 min : mise en commun. On répond en quatre points : qui fixe l'ordre · qui décide de ce qui est obligatoire · qui donne l'aide · qui fixe les échéances."],
-  regles:["On ne cherche pas le meilleur des quatre plans : on cherche ce qui se transfère à l'élève, et à quelle condition."],
-  plans:true, livret:"Fiche 6"},
+  etapes:["8 min : lecture à deux : un plan chacun, puis vous échangez.",
+          "4 min : vous remplissez le tableau de passation ci-dessous, chacun sur son appareil. Quatre critères, quatre niveaux : qui décide, à chaque fois. Et, en une ligne, ce qui rend ce transfert tenable.",
+          "3 min : mise en commun. Vous déposez vos contributions dans le tableau commun, qui se projette : on regarde les quatre cases où nous ne disons pas la même chose."],
+  regles:["On ne cherche pas le meilleur des quatre plans : on cherche ce qui se transfère à l'élève, et à quelle condition.",
+          "La colonne « ce qui le rend tenable » n'est pas facultative : c'est elle qui sépare la passation du simple retrait."],
+  plans:true, passation:true, livret:"Fiche 4"},
 
  {h:"14 h 30", d:30, type:"atelier", t:"J'écris mon plan de travail",
   consigne:"Prenez une séquence que vous conduirez avant décembre, et écrivez le plan que l'élève aura sous les yeux. Suivez les six étapes, dans l'ordre.",
@@ -995,7 +1053,7 @@ const J1A = {
   regles:["Rédigé à la deuxième personne, pour l'élève.","Trois niveaux d'exigence au maximum.",
           "Pour chaque tâche, un endroit où trouver de l'aide sans vous."],
   pasapas:{t:"Les six étapes, dans l'ordre", l:PAS_PDT, k:"pdt"},
-  trame:true, livret:"Fiche 6"},
+  trame:true, livret:"Fiche 4"},
 
  {h:"15 h 00", d:20, type:"atelier", t:"Éléa : découverte guidée",
   consigne:"Six étapes, à mener sur votre poste. L'objectif n'est pas de construire un parcours aujourd'hui, mais de comprendre la mécanique et de repartir avec une copie qui vous appartient.",
@@ -1013,6 +1071,29 @@ const J1A = {
   troislignes:true}
  ]
 };
+
+/* ---- les documents à imprimer, onglet Outils ---- */
+const IMPRESSIONS = [
+ {t:"Le plan d'impression", f:"A4 portrait, 3 pages", q:"pour vous", q2:"quantités, formats, et les trois listes de préparation",
+  u:[["Télécharger","plan-impression.docx"]]},
+ {t:"Livret du participant", f:"A4 portrait, 8 pages", q:"14 exemplaires", q2:"couleur recto-verso, agrafé",
+  u:[["Télécharger","livret-participant.docx"]]},
+ {t:"Les quatre plans de travail", f:"A4 portrait, 1 page chacun", q:"4 jeux de 4", q2:"couleur conseillée",
+  u:[["6e français","plan-de-travail-6e-francais.docx"],
+     ["2de maths","plan-de-travail-2de-maths.docx"],
+     ["3e histoire-géo","plan-de-travail-3e-histoire-geo.docx"],
+     ["Terminale SVT","plan-de-travail-terminale-svt.docx"]]},
+ {t:"La copie de troisième à noter", f:"A4 portrait, 1 page", q:"14 exemplaires", q2:"noir et blanc",
+  u:[["Télécharger","copie-3e-a-noter.docx"]]},
+ {t:"Cartes d'indices de l'énigme", f:"A4 portrait, 1 page", q:"3 exemplaires", q2:"à découper en quatre",
+  u:[["Télécharger","cartes-indices-enigme.docx"]]},
+ {t:"Les trois murs", f:"A3 paysage, 3 pages", q:"1 jeu", q2:"couleur, à afficher",
+  u:[["Télécharger","murs-a3.docx"]]},
+ {t:"Chevalets d'hôte", f:"A4 paysage, 3 pages", q:"1 jeu", q2:"à plier en deux",
+  u:[["Télécharger","chevalets-hote.docx"]]},
+ {t:"Affiche des liens du jour", f:"A3 paysage, 1 page", q:"2 exemplaires", q2:"couleur, cinq QR codes",
+  u:[["Télécharger","affiche-liens-a3.docx"]]}
+];
 
 /* ===================================================================
    Mardi 3 novembre : évaluer, coopérer, scénariser
@@ -1312,7 +1393,7 @@ const J2M = {
    {d:"10 min", t:"Vous écrivez le moment de séquence que cela produira : la séance, la production concernée, les <b>deux</b> configurations de salle et le signal de basculement."},
    {t:"Vous écrivez les deux configurations et le moment du basculement. C'est ce qui décide que le protocole tienne ou s'effondre."},
    {t:"Ce moment-là sera à reporter tel quel dans la séquence que vous écrirez à 11 h 20."}],
-  protos:true, refs:PROTOS_REFS, livret:"Fiche 8"},
+  protos:true, refs:PROTOS_REFS, livret:"Fiche 7"},
 
  {h:"9 h 25", d:25, type:"atelier", t:"Où en sont mes élèves ? Le radar de coopération",
   consigne:"Positionnez une classe précise sur les cinq critères, puis cherchez à trois les gestes qui la feraient monter d'un cran : et la configuration de salle que chacun suppose.",
@@ -1336,7 +1417,7 @@ const J2M = {
    {t:"Un seul feutre par groupe, et il tourne à chaque ligne : celui qui écrit n'est pas celui qui a l'idée."},
    {t:"On n'efface jamais. On ajoute, on barre, on entoure."},
    {t:"Une ligne incomplète ne compte pas : une modalité <b>sans</b> son aménagement et son outil ne sert à rien."}],
-  murs:true, depot:"Les trois murs photographiés, déposés dans le dossier partagé"},
+  murs:true, livret:"Fiche 6", depot:"Les trois murs photographiés, déposés dans le dossier partagé"},
 
  {h:"10 h 35", d:15, type:"pause", t:"Pause"},
 
@@ -1356,7 +1437,7 @@ const J2M = {
    {d:"50 min", t:"La trame, moment par moment. Vous vous installez où vous voulez : debout, assis, aux murs, à l'ordinateur."},
    {d:"8 min", t:"Vous regardez vos rubans et vos compteurs, et vous notez ce qu'il vous reste à corriger cet après-midi."},
    ...SCENAR_REGLES],
-  scenar:true, refs:[], livret:"Fiche 9"}
+  scenar:true, refs:[]}
  ]
 };
 
@@ -1372,7 +1453,7 @@ const J2A = {
    {d:"6 min", t:"Vous vérifiez les six règles une par une, à l'aide des trois rubans et des quatre compteurs."},
    {d:"4 min", t:"Vous téléchargez votre séquence au format Word."},
    ...SCENAR_REGLES],
-  scenar2:true, livret:"Fiche 9"},
+  scenar2:true},
 
  {h:"14 h 10", d:25, type:"atelier", t:"Lecture croisée en binôme",
   consigne:"Présentez votre séquence en cinq minutes. Votre binôme ne conseille pas : il questionne.",
@@ -1392,7 +1473,7 @@ const J2A = {
    {d:"5 min", t:"Ceux qui le souhaitent importent le .mbz dans leur espace Éléa."},
    {t:"Exportez le <b>.json</b> avant de fermer l'onglet : sans lui, le scénario est perdu."},
    {t:"On ne cherche pas à finir le parcours aujourd'hui. On cherche à avoir fait le chemin une fois, en entier."}],
-  sesame:true, depot:"Le lien de votre parcours Éléa, ou votre fichier .json"},
+  sesame:true, livret:"Fiche 7", depot:"Le lien de votre parcours Éléa, ou votre fichier .json"},
 
  {h:"15 h 10", d:20, type:"bilan", t:"Trois dates, et ce qui reste",
   consigne:"Une séquence existe quand elle est datée et qu'un collègue viendra la voir. Trois dates, une question, et nous nous quittons.",
@@ -1401,7 +1482,7 @@ const J2A = {
    {d:"10 min", t:"Tour de table : ce que je retiens · ce que je fais dès la semaine prochaine · ce dont j'ai besoin et que je n'ai pas."},
    {d:"2 min", t:"Dépôt des séquences dans le dossier partagé."},
    {t:"Pas de « courant décembre » : un jour, une heure, un collègue nommé."}],
-  dates:true, livret:"Fiche 11"}
+  dates:true, livret:"Fiche 8"}
  ]
 };
 
@@ -1569,6 +1650,85 @@ function wPlans(){
       <td class="${r[1].charAt(0)==="O"?"o":"c"}">${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody></table>
     <p class="nt">${esc(p.note)}</p>
     <div class="dlrow"><a class="dl" href="${p.f}" download>Télécharger ce plan (.docx)</a></div></div></div>`;
+}
+/* ---- la passation : quatre critères × quatre niveaux ---- */
+const pkey=(c,j)=>"PA-"+c+"-"+j;
+function passScore(G){
+  /* 0 = l'enseignant décide, 2 = l'élève décide. Somme par niveau. */
+  const s=[0,0,0,0]; let n=0;
+  PASS_CRIT.forEach(c=>PASS_NIV.forEach((x,j)=>{
+    const v=G[pkey(c.k,j)]; if(v===undefined||v==="")return; s[j]+=+v; n++;}));
+  return {s:s,n:n};
+}
+function passBar(){
+  const r=passScore(F);
+  if(r.n<4) return `<p class="hint" style="margin:12px 0 0">Complétez les quatre niveaux d'un critère au moins : la courbe de passation apparaîtra ici.</p>`;
+  const max=PASS_CRIT.length*2;
+  return `<div class="passb"><div class="passbh">Ce que l'élève décide, de la 6e à la terminale</div>
+   <div class="passbr">${PASS_NIV.map((x,j)=>{
+     const h=Math.round(r.s[j]/max*100);
+     return `<div class="passbc"><div class="passbv"><span style="height:${Math.max(h,3)}%"></span></div>
+       <b>${esc(x)}</b><i>${r.s[j]} / ${max}</i></div>`;}).join("")}</div>
+   <p class="hint" style="margin:10px 0 0">${r.s[3]>r.s[0]
+     ? "La courbe monte : c'est la passation. Reste à dire, critère par critère, ce qui la rend tenable."
+     : "La courbe ne monte pas. Soit vous décrivez un transfert qui n'a pas lieu, soit il passe par autre chose que ces quatre critères : dites lequel."}</p></div>`;
+}
+function wPass(){
+  return `<div class="mine"><h4>Ce que l'enseignant cesse de décider</h4>
+   <p class="hint">Pour chaque critère, qui décide à chaque niveau. Puis, en une ligne, ce qui rend ce transfert tenable : sans cette condition, le cran rendu à l'élève ne tient pas.</p>
+   <div class="passw"><table class="passt">
+    <thead><tr><th>Le critère</th>${PASS_NIV.map(x=>`<th>${esc(x)}</th>`).join("")}</tr></thead>
+    <tbody>${PASS_CRIT.map(c=>`
+      <tr class="pr1"><td><b>${esc(c.t)}</b><span class="ph">${esc(c.h)}</span></td>
+        ${PASS_NIV.map((x,j)=>`<td class="pc" data-pc="${c.k}-${j}">${sel(pkey(c.k,j),PASS_REP,"—")}</td>`).join("")}</tr>
+      <tr class="pr2"><td colspan="${PASS_NIV.length+1}">${ta("PA-"+c.k+"-c","À quelle condition ce transfert tient…",54)}</td></tr>`).join("")}
+    </tbody></table></div>
+   <div class="passbox">${passBar()}</div>
+   <div class="passmc">
+     <div class="passmch"><b>La mise en commun</b>
+       <span>Déposez ici les contributions du groupe : le tableau se remplit à plusieurs mains et se projette.</span></div>
+     <div class="row"><button class="btn solid sm" id="pcPick">Charger les contributions</button>
+       <button class="btn gh sm" id="pcRaz">Vider</button>
+       <input type="file" id="pcFiles" accept="application/json,.json" multiple hidden>
+       <span id="pcmsg" class="idmsg"></span></div>
+     <div id="pcbox"></div>
+   </div>
+   <p class="nt">${esc(PASS_FIN)}</p></div>`;
+}
+let PASSC=[];
+function passRender(){
+  const box=document.getElementById("pcbox"); if(!box)return;
+  if(!PASSC.length){box.innerHTML="";return;}
+  box.innerHTML=`<table class="passt pcol">
+   <thead><tr><th>Le critère</th>${PASS_NIV.map(x=>`<th>${esc(x)}</th>`).join("")}</tr></thead>
+   <tbody>${PASS_CRIT.map(c=>{
+     const cells=PASS_NIV.map((x,j)=>{
+       const tal=[0,0,0];
+       PASSC.forEach(m=>{const v=m.F[pkey(c.k,j)]; if(v!==undefined&&v!=="")tal[+v]++;});
+       const tot=tal[0]+tal[1]+tal[2];
+       if(!tot) return `<td class="pcq"><span class="pcv">—</span></td>`;
+       const hi=tal.indexOf(Math.max.apply(null,tal));
+       const acc=tal[hi]===tot;
+       return `<td class="pcq"><span class="pcv v${hi}">${esc(PASS_REP[hi])}</span>
+         <span class="pct">${tal[hi]} / ${tot}${acc?" : unanime":""}</span></td>`;}).join("");
+     const conds=PASSC.map(m=>(m.F["PA-"+c.k+"-c"]||"").trim()).filter(Boolean);
+     return `<tr class="pr1"><td><b>${esc(c.t)}</b></td>${cells}</tr>`+
+       (conds.length?`<tr class="pr2"><td colspan="${PASS_NIV.length+1}"><ul class="pcl">${
+         conds.map((t,i)=>`<li><b>${esc(PASSC.filter(m=>(m.F["PA-"+c.k+"-c"]||"").trim())[i].nom)}</b> : ${esc(t)}</li>`).join("")}</ul></td></tr>`:"");
+   }).join("")}</tbody></table>`;
+}
+async function passAdd(files){
+  let n=0,bad=0;
+  for(const f of Array.from(files)){
+    try{const G=JSON.parse(await f.text());
+      const nom=((G["ID-p"]||"")+" "+(G["ID-n"]||"")).trim()||f.name.replace(/\.json$/i,"");
+      PASSC=PASSC.filter(m=>m.nom!==nom); PASSC.push({nom:nom,F:G}); n++;
+    }catch(e){bad++;}
+  }
+  PASSC.sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+  passRender();
+  const m=document.getElementById("pcmsg");
+  if(m)m.textContent=PASSC.length+" contribution"+(PASSC.length>1?"s":"")+(bad?" : "+bad+" fichier illisible":"");
 }
 function wPasapas(o){
   return `<div class="mine"><h4>${esc(o.t)}</h4>
@@ -1743,7 +1903,7 @@ function wMurs(){
    <div class="rolerow">
      <div><span class="lg">Mon groupe</span>${sel("MU-g",["Groupe 1 : on ouvre le mur 1","Groupe 2 : on ouvre le mur 2","Groupe 3 : on ouvre le mur 3"],"Choisir")}</div>
      <div><span class="lg">Mon rôle</span>${sel("MU-r",["Je circule","Je suis l'hôte de ce mur"],"Choisir")}</div>
-     <div class="dlrow"><a class="dl" href="murs/murs-a3.docx" download>Les trois feuilles A3 à afficher (.docx)</a></div>
+     <div class="dlrow"><a class="dl" href="murs-a3.docx" download>Les trois feuilles A3 à afficher (.docx)</a></div>
    </div>
    ${corps}
    <p class="hint" style="margin-top:11px">${esc(MURS_FIN)}</p>
@@ -1934,6 +2094,7 @@ function card(s,ji,si){
   if(s.fragile) b+=wFragile();
   if(s.dates) b+=wDates();
   if(s.plans) b+=wPlans();
+  if(s.passation) b+=wPass();
   if(s.elea) b+=wElea();
   if(s.pasapas) b+=wPasapas(s.pasapas);
   if(s.trame) b+=wTrame();
@@ -1971,6 +2132,7 @@ function pageOutils(){
   <h3 class="sub2">Rassembler les contributions</h3>
   <div class="gen">
     <p class="lead" style="margin-top:0">Chaque participant exporte son carnet en <b>.json</b> et le dépose dans le dossier partagé. Déposez ici les fichiers récupérés : tous d'un coup : et vous obtenez <b>un seul document</b>, atelier par atelier, où chaque contribution est signée.</p>
+    <div class="row"><a class="btn" href="${DRIVE_URL}" target="_blank" rel="noopener">Ouvrir le dossier partagé</a></div>
     <div class="row"><button class="btn solid" id="mgPick">Choisir les fichiers .json</button>
       <button class="btn" id="mgMd">Exporter la synthèse (.md)</button>
       <button class="btn" id="mgDoc">Exporter la synthèse (.docx)</button>
@@ -1979,6 +2141,14 @@ function pageOutils(){
       <input type="file" id="mgFiles" accept="application/json,.json" multiple hidden>
       <span id="mgmsg" style="font-size:13px;color:var(--green);font-weight:700"></span></div>
     <div id="merge"></div>
+  </div>
+  <h3 class="sub2">Les documents à imprimer</h3>
+  <div class="gen">
+    <p class="lead" style="margin-top:0">Les sept documents du kit, dans l'ordre où ils servent. Le plan d'impression donne les quantités, les formats et le façonnage.</p>
+    <div class="impr">${IMPRESSIONS.map(d=>`<div class="imprl">
+      <div class="imprt"><b>${esc(d.t)}</b><span>${esc(d.f)} : ${esc(d.q)} : ${esc(d.q2)}</span></div>
+      ${d.u.map(u=>`<a class="btn gh sm" href="${u[1]}" download>${esc(u[0])}</a>`).join("")}
+    </div>`).join("")}</div>
   </div>
   <h3 class="sub2">Minuteur</h3>
   <p class="lead">Chaque séquence porte un bouton ⏱. Un clic lance le compte à rebours, qui s'égrène dans le bouton même : la page ne change pas, vous continuez à travailler. Un second clic le remet à zéro. Au-delà du temps imparti, le bouton passe au rouge et compte le dépassement.</p>`;
@@ -2000,6 +2170,17 @@ function txt(ji,si,s){
     ["a","b"].forEach((side,n)=>{const sub=[];
       for(let i=0;i<6;i++){const v=V("c-"+k+"-"+side+"-"+i).trim();if(v)sub.push("   – "+v);}
       if(sub.length)L.push(s.colonnes[n]+"\n"+sub.join("\n"));});
+  }
+  if(s.passation){
+    PASS_CRIT.forEach(c=>{
+      const cols=PASS_NIV.map((x,j)=>{const v=F[pkey(c.k,j)];
+        return x+" : "+((v===undefined||v==="")?"—":PASS_REP[+v]);});
+      const cond=V("PA-"+c.k+"-c").trim();
+      if(cols.some(x=>!/: —$/.test(x))||cond)
+        L.push(c.t+"\n   – "+cols.join(" | ")+(cond?"\n   – Ce qui le rend tenable : "+cond:""));});
+    const r=passScore(F);
+    if(r.n) L.push("Ce que l'élève décide, par niveau (sur "+(PASS_CRIT.length*2)+") : "+
+      PASS_NIV.map((x,j)=>x+" "+r.s[j]).join(" · "));
   }
   if(s.dispos){DISPOS4.forEach((n,i)=>{
       const p=["f","l","d","x","m"].map(x=>V("D-"+i+"-"+x).trim()).filter(Boolean);
@@ -2084,7 +2265,7 @@ function renderCarnet(){
   JOURS.forEach((j,ji)=>{
     const it=j.seq.map((s,si)=>({s,si,v:txt(ji,si,s)}))
       .filter(x=>x.s.form||x.s.depot||x.s.troislignes||x.s.grille||x.s.colonnes||x.s.dispos||x.s.tablecorr||
-        x.s.quiz||x.s.sort||x.s.trame||x.s.elea||x.s.enigme||x.s.copie||x.s.radar||
+        x.s.passation||x.s.quiz||x.s.sort||x.s.trame||x.s.elea||x.s.enigme||x.s.copie||x.s.radar||
         x.s.murs||x.s.protos||x.s.sesame||x.s.scenar||x.s.fragile||x.s.dates);
     if(!it.length)return;
     const garde=it.filter(x=>all||x.v);
@@ -2118,6 +2299,7 @@ function idBar(){
      <button class="btn solid sm" id="exJson">Déposer ma contribution</button>
      <button class="btn gh sm" id="exMd">Markdown</button>
      <button class="btn gh sm" id="imJson">Reprendre un fichier</button>
+     <a class="btn gh sm" href="${DRIVE_URL}" target="_blank" rel="noopener">Dossier partagé</a>
      <input type="file" id="fileJson" accept="application/json,.json" hidden>
      <span id="toolmsg" class="idmsg"></span></span>`;
   if(w&&F["ID-ok"]) return `<div class="idbar"><span class="idwho">Vous contribuez sous le nom de <b>${esc(w)}</b>${
@@ -2391,12 +2573,13 @@ function shuffle(){
 }
 
 /* ---- événements ---- */
-const PFX=["g","D","T","W","E","RC","RG","MU","AN","G","PS","S","FR","DT","TC","NA","NB"];
+const PFX=["g","D","T","W","E","RC","RG","MU","AN","G","PS","S","FR","DT","TC","NA","NB","PA"];
 function onField(el){
   F[el.dataset.f]=el.type==="checkbox"?el.checked:el.value;saveF();
   const p=el.dataset.f,h=p.split("-")[0];
   stamp(PFX.indexOf(h)>=0?(h==="RG"?"RC":h):p.split("-").slice(0,2).join("-"));
   if(h==="S")ruban();
+  if(h==="PA"){const b=document.querySelector(".passbox");if(b)b.innerHTML=passBar();}
   if(p==="MU-g"||p==="MU-r"){const box=el.closest(".mine");if(box){box.outerHTML=wMurs();fillF();}return;}
   if(el.dataset.nt)statNotes();
 }
@@ -2405,6 +2588,7 @@ document.addEventListener("change",e=>{
   const el=e.target.closest("[data-f]");
   if(el&&(el.type==="checkbox"||el.tagName==="SELECT"||el.type==="date"))onField(el);
   if(e.target.id==="mgFiles"){const t=e.target;if(t.files.length)addMerge(t.files).then(()=>{t.value="";});return;}
+  if(e.target.id==="pcFiles"){const t=e.target;if(t.files.length)passAdd(t.files).then(()=>{t.value="";});return;}
   if(e.target.id==="fileJson"){const t=e.target,f=t.files[0];if(!f)return;
     f.text().then(x=>{try{F=Object.assign({},F,JSON.parse(x));saveF();render();fillF();renderCarnet();renderMerge();msg("Importé.");}
       catch(err){msg("Fichier illisible.");}}).catch(()=>msg("Fichier illisible.")).then(()=>{t.value="";});}
@@ -2514,6 +2698,9 @@ document.addEventListener("click",e=>{
   if(e.target.id==="cbAll"){F["cbAll"]=!F["cbAll"];saveF();renderCarnet();return;}
   if(e.target.id==="imJson"){document.getElementById("fileJson").click();return;}
   if(e.target.id==="mgPick"){document.getElementById("mgFiles").click();return;}
+  if(e.target.id==="pcPick"){document.getElementById("pcFiles").click();return;}
+  if(e.target.id==="pcRaz"){PASSC=[];passRender();
+    const m=document.getElementById("pcmsg");if(m)m.textContent="Vidé.";return;}
   if(e.target.id==="mgMd"){if(!MERGE.length){msg2("Aucun fichier déposé.");return;}
     dl("contributions-espaces-modulables.md",mergeMd(),"text/markdown;charset=utf-8");return;}
   if(e.target.id==="mgDoc"){if(!MERGE.length){msg2("Aucun fichier déposé.");return;}mergeDocx();return;}
