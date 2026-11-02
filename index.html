@@ -332,6 +332,21 @@ table.t td:first-child{font-weight:700;color:var(--navy);background:#FAFBFD}
 .pcl{margin:0;padding-left:17px;font-size:12.5px;color:#39414E}
 .pcl li{margin:3px 0}
 .pcl b{color:var(--navy)}
+.sychip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  padding:6px 12px;border-radius:999px;white-space:nowrap}
+.sychip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.sy0{background:var(--light);color:var(--grey)}
+.sy1{background:var(--light);color:var(--blue)}
+.sy2{background:var(--gbg);color:var(--green)}
+.sy3{background:#FDECEC;color:var(--red)}
+.live{margin-top:18px;border-top:2px solid var(--light);padding-top:14px}
+.liveb{display:grid;gap:9px;margin-top:10px}
+.livec{background:#FBFCFE;border:1px solid var(--mid);border-left:4px solid var(--blue);
+  border-radius:0 6px 6px 0;padding:10px 13px}
+.livec h6{margin:0 0 5px;font-size:13px;color:var(--navy);display:flex;gap:8px;align-items:baseline}
+.livec h6 span{font-weight:400;font-size:11.5px;color:var(--grey)}
+.livec pre{margin:0;font:inherit;font-size:13px;line-height:1.55;color:#2A3340;white-space:pre-wrap;word-break:break-word}
+.livev{margin:10px 0 0;font-size:13px;color:var(--grey);font-style:italic}
 .impr{display:flex;flex-direction:column;gap:2px;margin-top:14px}
 .imprl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--light)}
 .imprl:first-child{border-top:0}
@@ -1092,7 +1107,7 @@ const J1A = {
 const IMPRESSIONS = [
  {t:"Le plan d'impression", f:"A4 portrait, 3 pages", q:"pour vous", q2:"quantités, formats, et les trois listes de préparation",
   u:[["Télécharger","plan-impression.docx"]]},
- {t:"Livret du participant", f:"A4 portrait, 8 pages", q:"14 exemplaires", q2:"couleur recto-verso, agrafé",
+ {t:"Livret du participant", f:"A4 portrait, 9 pages", q:"14 exemplaires", q2:"couleur recto-verso, agrafé",
   u:[["Télécharger","livret-participant.docx"]]},
  {t:"Les quatre plans de travail", f:"A4 portrait, 1 page chacun", q:"4 jeux de 4", q2:"couleur conseillée",
   u:[["6e français","plan-de-travail-6e-francais.docx"],
@@ -1522,7 +1537,122 @@ const PAGES=[...JOURS.map(j=>({id:j.id,tab:j.tab})),
 
 let F={};
 function loadF(){try{F=JSON.parse(localStorage.getItem("em2")||"{}")||{};}catch(e){F={};}}
-function saveF(){try{localStorage.setItem("em2",JSON.stringify(F));}catch(e){}}
+function saveF(){try{localStorage.setItem("em2",JSON.stringify(F));}catch(e){}syPush();}
+
+/* ===================================================================
+   La salle partagée : ce que chacun écrit apparaît chez les autres.
+   Fond de stockage : une base Firebase Realtime Database en accès
+   ouvert, interrogée par son API REST. Aucune bibliothèque, aucun
+   compte pour les participants : une adresse et un code de salle.
+   Sans configuration, l'application fonctionne exactement comme avant,
+   en local.
+   =================================================================== */
+const SYK="em2-sync";
+let SY={url:"",code:"",id:"",nom:""};
+let PEERS={};
+let SYES=null,SYT=null,SYETAT="off",SYREST=false,SYRETRY=0,SYRT=null;
+
+function syLoad(){
+  try{SY=Object.assign(SY,JSON.parse(localStorage.getItem(SYK)||"{}")||{});}catch(e){}
+  if(!SY.id){SY.id="p"+Math.random().toString(36).slice(2,10);sySave();}
+}
+function sySave(){try{localStorage.setItem(SYK,JSON.stringify(SY));}catch(e){}}
+function syOn(){return !!(SY.url&&SY.code);}
+function syBase(){
+  if(!syOn())return "";
+  let u=SY.url.trim().replace(/\s/g,"").replace(/\/+$/,"");
+  const local=/^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(u);
+  u=u.replace(/^https?:\/\//,"");
+  return (local?"http://":"https://")+u+"/salles/"+encodeURIComponent(SY.code.trim().toLowerCase());
+}
+function syEtat(e){if(SYETAT===e)return;SYETAT=e;syChip();}
+function syChip(){
+  document.querySelectorAll("[data-sychip]").forEach(el=>{
+    const n=Object.keys(PEERS).length;
+    const T={off:["Hors salle","sy0"],connexion:["Connexion…","sy1"],
+             ok:[n>1?n+" connectés":"Salle ouverte","sy2"],erreur:["Salle injoignable","sy3"]}[SYETAT]||["",""];
+    el.className="sychip "+T[1];el.textContent=T[0];
+  });
+}
+function syPush(){
+  if(!syOn())return;
+  clearTimeout(SYT);
+  SYT=setTimeout(()=>{
+    const b=syBase();if(!b)return;
+    fetch(b+"/membres/"+SY.id+".json",{method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({n:who()||"",d:(F["ID-d"]||"").trim(),t:Date.now(),F:F})})
+      .then(r=>{if(!r.ok)throw 0;if(SYETAT!=="ok")syEtat("ok");})
+      .catch(()=>syEtat("erreur"));
+  },1100);
+}
+function syClose(){if(SYES){try{SYES.close();}catch(e){}SYES=null;}clearTimeout(SYRT);}
+function syOpen(){
+  syClose();PEERS={};SYREST=false;
+  const b=syBase();
+  if(!b){syEtat("off");syPaint();return;}
+  syEtat("connexion");
+  try{
+    SYES=new EventSource(b+"/membres.json");
+    SYES.addEventListener("put",e=>syEvt(e.data,true));
+    SYES.addEventListener("patch",e=>syEvt(e.data,false));
+    SYES.addEventListener("keep-alive",()=>{});
+    SYES.onopen=()=>{SYRETRY=0;syEtat("ok");syPush();};
+    SYES.onerror=()=>{syEtat("erreur");syClose();
+      SYRETRY=Math.min(SYRETRY+1,6);
+      SYRT=setTimeout(syOpen,Math.min(2000*SYRETRY,20000));};
+  }catch(e){syEtat("erreur");}
+}
+function syEvt(raw){
+  let m;try{m=JSON.parse(raw);}catch(e){return;}
+  if(!m||m.path===undefined)return;
+  const p=String(m.path).replace(/^\/+/,"");
+  if(p===""){PEERS=m.data||{};}
+  else{
+    const seg=p.split("/");
+    let o=PEERS;
+    for(let i=0;i<seg.length-1;i++){if(typeof o[seg[i]]!=="object"||o[seg[i]]===null)o[seg[i]]={};o=o[seg[i]];}
+    const last=seg[seg.length-1];
+    if(m.data===null)delete o[last];else o[last]=m.data;
+  }
+  syEtat("ok");syRestore();syPaint();
+}
+/* Au retour : si le serveur détient plus que ce navigateur, on reprend. */
+function syRestore(){
+  if(SYREST)return;SYREST=true;
+  const mine=PEERS[SY.id];
+  if(!mine||!mine.F)return;
+  if(Object.keys(mine.F).length<=Object.keys(F).length)return;
+  F=Object.assign({},mine.F,F);
+  try{localStorage.setItem("em2",JSON.stringify(F));}catch(e){}
+  render();fillF();ruban();statNotes();syPaint();
+}
+function syAutres(){
+  return Object.keys(PEERS)
+    .filter(k=>k!==SY.id&&PEERS[k]&&PEERS[k].F)
+    .map(k=>({id:k,nom:(PEERS[k].n||"").trim()||"Sans nom",disc:(PEERS[k].d||"").trim(),F:PEERS[k].F}))
+    .sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+}
+/* Les panneaux « ce que les autres écrivent », mis à jour sans
+   jamais retoucher les champs en cours de saisie. */
+function syPaint(){
+  syChip();
+  document.querySelectorAll("[data-live]").forEach(box=>{
+    const [ji,si]=box.dataset.live.split("|").map(Number);
+    const s=JOURS[ji].seq[si];
+    const gens=syAutres().map(m=>({m:m,t:txtOf(ji,si,s,m.F)})).filter(x=>x.t&&x.t.trim());
+    if(!gens.length){
+      box.innerHTML=`<p class="livev">${syOn()
+        ? "Personne n'a encore écrit sur cet atelier. Ce que vos collègues saisiront apparaîtra ici, au fur et à mesure."
+        : "La salle partagée n'est pas ouverte. Onglet Outils, « La salle partagée » : l'animateur donne l'adresse et le code."}</p>`;
+      return;
+    }
+    box.innerHTML=gens.map(x=>`<div class="livec"><h6>${esc(x.m.nom)}${
+      x.m.disc?`<span>${esc(x.m.disc)}</span>`:""}</h6><pre>${esc(x.t)}</pre></div>`).join("");
+  });
+  const c=document.getElementById("syCount");
+  if(c){const n=syAutres().length;c.textContent=n?(n+" autre"+(n>1?"s":"")+" dans la salle"):"Personne d'autre pour l'instant";}
+}
 const V=k=>F[k]||"";
 function inp(k,ph){return `<input type="text" data-f="${k}" placeholder="${esc(ph||"")}">`;}
 function ta(k,ph,h){return `<textarea class="cell" rows="3" style="min-height:${h||78}px" data-f="${k}" placeholder="${esc(ph||"")}"></textarea>`;}
@@ -2093,6 +2223,9 @@ function wDates(){
    <p class="saved" data-saved="DT"></p></div>`;
 }
 
+const ECRIT=s=>!!(s.form||s.depot||s.troislignes||s.grille||s.colonnes||s.dispos||s.tablecorr||
+  s.passation||s.quiz||s.sort||s.trame||s.elea||s.enigme||s.copie||s.radar||
+  s.murs||s.protos||s.sesame||s.scenar||s.scenar2||s.fragile||s.dates);
 function card(s,ji,si){
   const T=TYPES[s.type]||TYPES.atelier,k=ji+"-"+si;
   let b="";
@@ -2138,6 +2271,9 @@ function card(s,ji,si){
   if(s.quiz) a.push(`<button class="btn solid" data-quiz="play">Jouer au quiz</button><button class="btn" data-quiz="rev">Révéler et débattre</button>`);
   if(s.type!=="pause") a.push(`<button class="btn gh tkb" data-timer="${k}" data-min="${s.d}" title="Cliquer pour lancer · cliquer de nouveau pour remettre à zéro">⏱ ${s.d} min</button>`);
   if(a.length) b+=`<div class="acts">${a.join("")}</div>`;
+  if(ECRIT(s)) b+=`<div class="live"><h5 class="mur">Ce que les autres écrivent</h5>
+    <p class="hint">Mis à jour en direct, dès que quelqu'un saisit quelque chose. À projeter pour la mise en commun.</p>
+    <div class="liveb" data-live="${ji}|${si}"></div></div>`;
   return `<div class="item"><div class="when">${esc(s.h)}<span>${s.d} min</span></div>
     <div class="dotmark" style="border-color:${T.c}"></div>
     <div class="card" style="--acc:${T.c}"><button class="chead" data-toggle>
@@ -2151,6 +2287,20 @@ function pageJour(j,ji){
 function pageOutils(){
   const n=Array.from({length:12},(_,i)=>"Participant "+(i+1)).join("\n");
   return `<h2 class="sec">Outils</h2>
+  <h3 class="sub2">La salle partagée</h3>
+  <div class="gen">
+    <p class="lead" style="margin-top:0">Tant qu'elle n'est pas ouverte, chacun travaille dans son coin et tout reste sur son appareil. Une fois l'adresse et le code saisis, ce que chacun écrit apparaît chez les autres, et rien n'est perdu à la reconnexion : vous retrouvez votre travail en revenant sur la même adresse, avec le même code.</p>
+    <div class="row">
+      <div style="flex:2 1 320px"><label for="syUrl">Adresse de la base</label>
+        <input type="text" id="syUrl" placeholder="xxxx-default-rtdb.europe-west1.firebasedatabase.app" value="${esc(SY.url||"")}"></div>
+      <div style="flex:1 1 150px"><label for="syCode">Code de la salle</label>
+        <input type="text" id="syCode" placeholder="noailles-nov" value="${esc(SY.code||"")}"></div>
+      <button class="btn solid" id="syGo">Ouvrir la salle</button>
+      <button class="btn gh" id="syOff">Quitter</button>
+      <span data-sychip class="sychip sy0">Hors salle</span></div>
+    <p class="hint" style="margin-top:12px" id="syCount">Personne d'autre pour l'instant</p>
+    <p class="hint">Le code regroupe les participants : tout le monde met le même. Pour une autre formation, changez le code, les données ne se mélangent pas.</p>
+  </div>
   <h3 class="sub2">Constitution des groupes</h3>
   <div class="gen"><label for="noms">Un nom par ligne</label><textarea id="noms">${n}</textarea>
   <div class="row"><div><label for="taille">Composition</label>
@@ -2162,7 +2312,8 @@ function pageOutils(){
   <div class="gen">
     <p class="lead" style="margin-top:0">Chaque participant exporte son carnet en <b>.json</b> et le dépose dans le dossier partagé. Déposez ici les fichiers récupérés : tous d'un coup : et vous obtenez <b>un seul document</b>, atelier par atelier, où chaque contribution est signée.</p>
     <div class="row"><a class="btn" href="${DRIVE_URL}" target="_blank" rel="noopener">Ouvrir le dossier partagé</a></div>
-    <div class="row"><button class="btn solid" id="mgPick">Choisir les fichiers .json</button>
+    <div class="row"><button class="btn solid" id="mgSalle">Prendre les contributions de la salle</button></div>
+    <div class="row"><button class="btn" id="mgPick">Choisir les fichiers .json</button>
       <button class="btn" id="mgMd">Exporter la synthèse (.md)</button>
       <button class="btn" id="mgDoc">Exporter la synthèse (.docx)</button>
       <button class="btn gh" id="mgRaz">Vider</button>
@@ -2331,6 +2482,7 @@ function idBar(){
      <button class="btn gh sm" id="exMd">Markdown</button>
      <button class="btn gh sm" id="imJson">Reprendre un fichier</button>
      <a class="btn gh sm" href="${DRIVE_URL}" target="_blank" rel="noopener">Dossier partagé</a>
+     <span data-sychip class="sychip sy0">Hors salle</span>
      <input type="file" id="fileJson" accept="application/json,.json" hidden>
      <span id="toolmsg" class="idmsg"></span></span>`;
   if(w&&F["ID-ok"]) return `<div class="idbar"><span class="idwho">Vous contribuez sous le nom de <b>${esc(w)}</b>${
@@ -2410,11 +2562,12 @@ function render(){
     `<div id="idzone">${idBar()}</div>`+
     JOURS.map((j,i)=>`<section class="page${i===0?" on":""}" id="p-${j.id}">${pageJour(j,i)}</section>`).join("")+
     `<section class="page" id="p-outils">${pageOutils()}</section>`;
+  syPaint();
 }
 function go(id){
   document.querySelectorAll("section.page").forEach(s=>s.classList.toggle("on",s.id==="p-"+id));
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.go===id));
-  fillF();ruban();statNotes();
+  fillF();ruban();statNotes();syPaint();
   window.scrollTo({top:0,behavior:"instant"});
 }
 function fillF(){document.querySelectorAll("[data-f]").forEach(el=>{
@@ -2769,8 +2922,21 @@ document.addEventListener("click",e=>{
   if(e.target.id==="exJson"){dl("carnet-"+slug()+".json",JSON.stringify(F,null,2),"application/json");return;}
   if(e.target.id==="cbAll"){F["cbAll"]=!F["cbAll"];saveF();renderCarnet();return;}
   if(e.target.id==="imJson"){document.getElementById("fileJson").click();return;}
+  if(e.target.id==="mgSalle"){
+    const L=syAutres();
+    if(who()&&F["ID-ok"])L.push({nom:who(),disc:(F["ID-d"]||"").trim(),F:F});
+    if(!L.length){msg2("La salle est vide, ou elle n'est pas ouverte.");return;}
+    MERGE=L.map(m=>({nom:m.nom,disc:m.disc,F:m.F})).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+    renderMerge();msg2(MERGE.length+" contribution"+(MERGE.length>1?"s":"")+" reprise"+(MERGE.length>1?"s":"")+" de la salle.");return;}
   if(e.target.id==="mgPick"){document.getElementById("mgFiles").click();return;}
   if(e.target.id==="pcPick"){document.getElementById("pcFiles").click();return;}
+  if(e.target.id==="syGo"){
+    SY.url=(document.getElementById("syUrl").value||"").trim();
+    SY.code=(document.getElementById("syCode").value||"").trim();
+    sySave();syOpen();return;}
+  if(e.target.id==="syOff"){syClose();SY.url="";SY.code="";sySave();PEERS={};
+    const a=document.getElementById("syUrl"),b=document.getElementById("syCode");
+    if(a)a.value="";if(b)b.value="";syEtat("off");syPaint();return;}
   if(e.target.id==="ntPick"){document.getElementById("ntFiles").click();return;}
   if(e.target.id==="ntRaz"){for(let k=0;k<15;k++){delete F["NA-"+k];delete F["NB-"+k];delete F["NM-"+k];}
     saveF();const b=document.querySelector(".mine .notes");
@@ -2798,7 +2964,9 @@ document.addEventListener("keydown",e=>{
     return;}
 });
 
-loadF();tabs();render();fillF();renderCarnet();renderMerge();ruban();statNotes();
+loadF();syLoad();tabs();render();fillF();renderCarnet();renderMerge();ruban();statNotes();
+syPaint();syOpen();
+window.addEventListener("beforeunload",syClose);
 </script>
 </body>
 </html>
