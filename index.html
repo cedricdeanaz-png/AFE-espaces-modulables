@@ -347,6 +347,10 @@ table.t td:first-child{font-weight:700;color:var(--navy);background:#FAFBFD}
 .livec h6 span{font-weight:400;font-size:11.5px;color:var(--grey)}
 .livec pre{margin:0;font:inherit;font-size:13px;line-height:1.55;color:#2A3340;white-space:pre-wrap;word-break:break-word}
 .livev{margin:10px 0 0;font-size:13px;color:var(--grey);font-style:italic}
+.leg{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin:14px 0 18px}
+.legc{background:#FBFCFE;border:1px solid var(--mid);border-top:4px solid var(--blue);border-radius:0 0 6px 6px;padding:11px 13px}
+.legc b{display:block;font-size:13px;color:var(--navy);margin-bottom:5px}
+.legc span{font-size:12.5px;line-height:1.5;color:#39414E}
 .impr{display:flex;flex-direction:column;gap:2px;margin-top:14px}
 .imprl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--light)}
 .imprl:first-child{border-top:0}
@@ -1313,8 +1317,8 @@ const SP_DIX = [
  "C'est une situation <b>à caractère concret</b>, qui permet à l'élève de formuler des hypothèses et des conjectures : pas un exemple illustratif.",
  "Elle est perçue par les élèves comme <b>une véritable énigme à résoudre</b> : le problème devient leur affaire.",
  "L'élève <b>ne dispose pas au départ des moyens de la solution</b> : c'est le besoin de résoudre qui le conduit à construire l'outil.",
- "La situation offre une <b>résistance suffisante</b> pour remettre en cause les représentations antérieures.",
- "La solution n'est pas <b>hors d'atteinte</b> : on travaille dans la zone proximale de développement.",
+ "La situation offre une <b>résistance suffisante</b> : elle résiste vraiment, au point de remettre en cause ce que l'élève croyait savoir. Une question à laquelle il répond du premier coup n'a pas résisté.",
+ "La solution n'est pas <b>hors d'atteinte</b> : l'obstacle est au-dessus de l'élève, mais à portée de sa main tendue. Trop haut, il renonce, copie ou attend : c'est la zone proximale de développement de Vygotski.",
  "L'anticipation des résultats et son expression collective <b>précèdent</b> la recherche. Le risque fait partie du jeu.",
  "Le travail fonctionne sur le <b>mode du débat scientifique</b>, avec des conflits socio-cognitifs.",
  "La validation n'est pas apportée <b>de façon externe par l'enseignant</b> : elle résulte de la structuration de la situation.",
@@ -1322,18 +1326,23 @@ const SP_DIX = [
 ];
 const SP_SRC = "Les dix caractéristiques d'une situation-problème, d'après Guy Robardet et Roland Charnay ; la notion est développée par Jean-Pierre Astolfi (<i>L'école pour apprendre</i>, ESF) et par Gérard De Vecchi et Nicole Carmona-Magnaldi (<i>Faire vivre de véritables situations-problèmes</i>, Hachette). Dans l'enseignement scientifique, elles se retrouvent dans les sept moments de la démarche d'investigation : Coquidé, M., Fortin, C. &amp; Rumelhard, G. (2009), <i>Aster</i> n° 49.";
 
-const SP_CAT = ["Une vraie situation-problème","L'élève a déjà les moyens de répondre","La résistance est hors d'atteinte"];
+const SP_CAT = ["Une vraie situation-problème","Un exercice d'application","Une question ouverte"];
+const SP_CAT_D = [
+ "Il y a un obstacle précis, l'élève ne peut pas le franchir avec ce qu'il sait déjà, et il peut le franchir dans la séance.",
+ "Pas d'obstacle : l'élève a déjà tout ce qu'il faut pour répondre. C'est utile, mais ça n'ouvre pas une séquence.",
+ "Rien de précis à franchir, et rien qui permette de trancher : toutes les réponses se valent. On discute, on n'apprend pas une notion identifiée."
+];
 const SP = [
  {t:"« Voici trois documents sur l'exode rural. À l'aide de ces documents, expliquez pourquoi les campagnes se sont vidées. »", r:1,
   w:"La réponse est intégralement dans les documents fournis : l'élève prélève, il ne construit rien. C'est un exercice de lecture, utile, mais il ne franchit aucun obstacle (caractéristique 4 : l'élève ne doit pas disposer au départ des moyens de la solution)."},
  {t:"« Deux élèves de la classe ont mesuré la même cour et ne trouvent pas la même aire. Ils ont tous les deux bien calculé. Comment est-ce possible ? »", r:0,
   w:"Un fait constaté et contradictoire, que les connaissances actuelles de l'élève ne permettent pas d'expliquer, et dont l'explication exige précisément la notion visée : incertitude de mesure, ou unités. La validation viendra de la situation elle-même, non de vous (caractéristiques 1, 3, 5 et 9)."},
  {t:"« Pourquoi y a-t-il des inégalités dans le monde ? »", r:2,
-  w:"La question est juste, et elle est sans prise : aucun obstacle identifié, aucune anticipation possible, aucune validation imaginable à l'échelle d'une séance. Elle ouvre une discussion d'opinion, pas une recherche (caractéristique 6 : la solution ne doit pas être hors d'atteinte)."},
+  w:"La question est juste, et elle est sans prise : aucun obstacle identifié, aucune anticipation possible, aucune validation imaginable à l'échelle d'une séance. Elle ouvre une discussion d'opinion, pas une recherche Elle est hors de portée non pas parce qu'elle est difficile, mais parce qu'il n'y a rien de précis à franchir (caractéristique 6)."},
  {t:"« Voici deux phrases presque identiques ; l'une est correcte, l'autre non. Trouvez ce qui change, et formulez la règle. »", r:0,
   w:"Exemple et contre-exemple : la règle est à construire par inférence, l'élève anticipe puis vérifie, et le débat tranche. L'obstacle est précis et franchissable dans la séance (caractéristiques 1, 2, 7 et 8)."},
  {t:"« Imaginez une société sans monnaie. Comment fonctionnerait-elle ? »", r:2,
-  w:"Séduisante, et sans résistance mesurable : toute réponse se vaut, rien ne permet de valider. On produit de la créativité, pas un apprentissage identifié. L'écart avec l'item précédent est exactement celui qui sépare une question ouverte d'une situation-problème."},
+  w:"Séduisante, et rien n'y résiste vraiment : toute réponse se vaut, rien ne permet de trancher. On produit de la créativité, pas un apprentissage identifié. L'écart avec l'item précédent est exactement celui qui sépare une question ouverte d'une situation-problème."},
  {t:"« Calculez l'aire de ce rectangle, puis celle de celui-ci, puis celle de ce troisième. »", r:1,
   w:"Une série d'applications. Elle a sa place : après le franchissement de l'obstacle : mais elle n'ouvre rien : l'élève sait déjà faire, il s'entraîne. C'est de la Pratique au sens des six types, pas une entrée de séquence."}
 ];
@@ -1456,11 +1465,11 @@ const J2M = {
  {h:"10 h 50", d:30, type:"apport", t:"Qu'est-ce qu'une séquence engageante ?",
   consigne:"Deux choses, et elles commandent tout ce que vous écrirez ensuite : ce qui ouvre une séquence, et ce qui l'empêche de s'installer dans un seul registre.",
   jeu:[
-   {d:"10 min", t:"Les six types d'activité, dépliés un par un. Pour chacun, nous nommons ensemble un exemple dans votre discipline."},
    {d:"12 min", t:"Six entrées de séquence, toutes formulées comme des questions. Vous les classez seul sur votre appareil, puis nous corrigeons et nous discutons les deux qui auront le plus divisé."},
-   {d:"8 min", t:"Les dix caractéristiques d'une situation-problème, en regard de ce que vous venez de trancher."},
+   {d:"8 min", t:"Les dix caractéristiques d'une situation-problème, en regard de ce que vous venez de trancher. C'est la grille qui explique les corrections."},
+   {d:"10 min", t:"Puis l'autre question : les six types d'activité, dépliés un par un. Pour chacun, nous nommons ensemble un exemple dans votre discipline."},
    {t:"Sur les six entrées, on ne cherche pas la bonne réponse : on cherche à nommer l'obstacle. Si vous ne savez pas le nommer, ce n'est pas une situation-problème."}],
-  abc:true, sort:"SP", refs:ABC_REFS},
+  sort:"SP", dix:true, abc:true, refs:ABC_REFS},
 
  {h:"11 h 20", d:70, type:"atelier", t:"Je scénarise ma séquence",
   consigne:"Prenez la séquence que vous conduirez avant décembre. Écrivez d'abord la situation-problème qui l'ouvre et l'obstacle qu'elle vise, puis remplissez la trame, moment par moment. Les trois rubans et les quatre compteurs vous disent en direct si les six règles sont tenues.",
@@ -1768,12 +1777,13 @@ const SORTS={
      h:"Classez chaque énoncé, puis corrigez. L'ordre ne vous aidera pas : les bonnes réponses ne se suivent pas.",
      cats:TRI3_CAT, items:TRI3, fin:TRI3_FIN},
  SP:{t:"Six entrées de séquence, toutes formulées comme des questions",
-     h:"Pour chacune : est-ce une vraie situation-problème, ou bien l'élève a-t-il déjà les moyens de répondre, ou bien la résistance est-elle hors d'atteinte ? Classez seul, puis nous corrigeons.",
-     cats:SP_CAT, items:SP, fin:SP_FIN}
+     h:"Les trois cas se distinguent par une seule chose : y a-t-il un obstacle, et l'élève peut-il le franchir ? Classez seul, puis nous corrigeons.",
+     cats:SP_CAT, desc:SP_CAT_D, items:SP, fin:SP_FIN}
 };
 function wSort(k){
   const o=SORTS[k];
   return `<div class="mine"><h4>${esc(o.t)}</h4><p class="hint">${esc(o.h)}</p>
+   ${o.desc?`<div class="leg">${o.cats.map((c,i)=>`<div class="legc"><b>${esc(c)}</b><span>${esc(o.desc[i])}</span></div>`).join("")}</div>`:""}
    ${o.items.map((q,i)=>`<div class="trirow${o.cats.length>2?" tri3":""}" data-sr="${k}-${i}">
      <span class="q">${esc(q.t)}</span>
      <span class="bs">${o.cats.map((c,v)=>`<button data-sv="${k}|${i}|${v}" aria-pressed="${String(F[k+"-"+i])===String(v)}">${esc(c)}</button>`).join("")}</span>
@@ -2075,10 +2085,12 @@ function wAbc(){
    <div class="lev">${ABC.map((t,i)=>`<div class="levc" data-lev="${i}" style="border-top-color:${ABCCOL[i]}">
      <h5>${esc(t)}</h5><p class="v">${esc(ABC_D[i].split(":")[0])}</p>
      <div class="more"><p>${esc(ABC_D[i])}</p></div></div>`).join("")}</div>
-   <div class="cle" style="margin-top:13px"><b>CE QUE CELA CHANGE POUR VOUS</b>${esc(ABC_CLE)}</div>
-   <h5 class="mur">Les dix caractéristiques d'une situation-problème</h5>
-   <p class="hint">À lire après avoir trié les six entrées ci-dessus : c'est la grille qui explique les corrections.</p>
-   <div class="acts"><button class="btn sm" id="spGo">Ouvrir les dix caractéristiques</button></div>
+   <div class="cle" style="margin-top:13px"><b>CE QUE CELA CHANGE POUR VOUS</b>${esc(ABC_CLE)}</div></div>`;
+}
+function wDix(){
+  return `<div class="mine"><h4>Les dix caractéristiques d'une situation-problème</h4>
+   <p class="hint">La grille qui explique les corrections que vous venez de lire. À ouvrir une fois le tri corrigé, pas avant.</p>
+   <div class="acts"><button class="btn solid sm" id="spGo">Ouvrir les dix caractéristiques</button></div>
    <div class="spbox" id="spbox"><ol>${SP_DIX.map(x=>`<li>${x}</li>`).join("")}</ol>
      <p class="src">${SP_SRC}</p></div></div>`;
 }
@@ -2245,6 +2257,7 @@ function card(s,ji,si){
   if(s.form==="ressources") b+=wRessources(k);
   if(s.leviers) b+=wLeviers();
   if(s.sort) b+=wSort(s.sort);
+  if(s.dix) b+=wDix();
   if(s.enigme) b+=wEnigme();
   if(s.copie) b+=wCopie();
   if(s.radar) b+=wRadar();
