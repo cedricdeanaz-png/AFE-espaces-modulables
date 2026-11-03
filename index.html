@@ -540,6 +540,25 @@ h5.mur{margin:18px 0 6px;font-size:12px;letter-spacing:1.4px;text-transform:uppe
 .sl span{display:block;font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--grey);margin-bottom:3px}
 .sl select{width:100%;font-size:12.5px;padding:6px 5px}
 .rublab{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--grey);margin-bottom:3px}
+.momh{position:relative}
+.momx{position:absolute;top:-2px;right:-4px;width:26px;height:26px;border-radius:50%;
+  border:1px solid var(--mid);background:#fff;color:var(--grey);font-size:13px;line-height:1;cursor:pointer}
+.momx:hover:not(:disabled){border-color:var(--red);color:var(--red);background:#FFF7F7}
+.momx:disabled{opacity:.3;cursor:default}
+.momm{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--light)}
+.mll{display:block;font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--grey);margin-bottom:5px}
+.mch{display:flex;flex-wrap:wrap;gap:5px}
+.mc{font:inherit;font-size:12px;padding:5px 10px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--mid);background:#fff;color:#39414E;line-height:1.2}
+.mc:hover{border-color:var(--blue);color:var(--blue)}
+.mc.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+.ruban span.grp{display:flex;gap:1px;background:none;padding:0}
+.ruban span.grp i{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9px;white-space:nowrap;text-overflow:ellipsis;
+  overflow:hidden;text-align:center;padding:0 2px;border-radius:3px}
+.ruban span.grp i:first-child{border-radius:4px 3px 3px 4px}
+.ruban span.grp i:last-child{border-radius:3px 4px 4px 3px}
+.ruban span.grp i:only-child{border-radius:4px}
 
 /* ---- contrôles et réparation ---- */
 .ctrl{border:1px solid var(--mid);border-left:5px solid var(--grey);border-radius:0 7px 7px 0;
@@ -2136,14 +2155,26 @@ function wProtos(){
    <p class="saved" data-saved="PS"></p></div>`;
 }
 
+/* ---- champs à choix multiple : les valeurs sont stockées "0,2,3" ---- */
+function mget(k){const v=F[k];
+  if(v===undefined||v===null||v==="")return [];
+  return String(v).split(",").filter(x=>x!=="").map(Number).filter(x=>!isNaN(x));}
+function mhas(k,v){return mget(k).indexOf(v)>=0;}
+function mtog(k,v){const a=mget(k),i=a.indexOf(v);
+  if(i>=0)a.splice(i,1);else a.push(v);
+  a.sort((x,y)=>x-y);F[k]=a.join(",");saveF();}
+function mlab(k,arr){return mget(k).map(v=>arr[v]).filter(Boolean);}
+const sig=a=>a.slice().sort((x,y)=>x-y).join(",");
+
 function diagSeq(rows){
-  const m=rows.map(r=>r.m),b=rows.map(r=>r.b),e=rows.map(r=>r.e),d=rows.map(r=>r.d);
+  const m=rows.map(r=>sig(r.m)),b=rows.map(r=>r.b),e=rows.map(r=>r.e),d=rows.map(r=>sig(r.d));
   let trop=false;
-  for(let i=2;i<m.length;i++) if(m[i]!==null&&m[i]===m[i-1]&&m[i]===m[i-2]) trop=true;
-  let chg=0;for(let i=1;i<d.length;i++) if(d[i]!==null&&d[i-1]!==null&&d[i]!==d[i-1]) chg++;
-  const uniq=a=>a.filter((x,i)=>x!==null&&a.indexOf(x)===i).length;
-  return {n:rows.length, trop:trop, nmod:uniq(m), nabc:uniq(rows.map(r=>r.a)),
-    ecrits:m.filter(x=>x!==null).length,
+  for(let i=2;i<m.length;i++) if(m[i]!==""&&m[i]===m[i-1]&&m[i]===m[i-2]) trop=true;
+  let chg=0;for(let i=1;i<d.length;i++) if(d[i]!==""&&d[i-1]!==""&&d[i]!==d[i-1]) chg++;
+  const um=new Set();rows.forEach(r=>r.m.forEach(x=>um.add(x)));
+  const ua=new Set();rows.forEach(r=>{if(r.a!==null)ua.add(r.a);});
+  return {n:rows.length, trop:trop, nmod:um.size, nabc:ua.size,
+    ecrits:rows.filter(r=>r.m.length>0).length,
     haut:b.filter(x=>x!==null&&x>=3).length,
     pairs:e.filter(x=>x!==null&&x>=2).length,
     chg:chg};
@@ -2159,19 +2190,45 @@ function rubMsg(d){
 const MODCOL=["var(--navy)","var(--blue)","var(--green)","var(--red)"];
 const BLOOMCOL=["#C9D3EE","#A8B1C0","#6E7684","#2572FF","#0B1C8F","#157A58"];
 const ABCCOL=["#8893A8","#2572FF","#0B1C8F","#C77700","#157A58","#E30613"];
-const NMOM=8;
+const NMOM=8, NMOM_MAX=16;
+function nMom(){const n=parseInt(F["S-n"],10);
+  return (!isNaN(n)&&n>=1&&n<=NMOM_MAX)?n:NMOM;}
 function myRows(){
-  return Array.from({length:NMOM},(_,i)=>{
+  return Array.from({length:nMom()},(_,i)=>{
     const g=k=>{const x=F["S-"+i+"-"+k];return (x===undefined||x==="")?null:+x;};
-    return {m:g("m"),b:g("b"),a:g("a"),d:g("d"),o:g("o"),e:g("e")};});
+    const G=k=>mget("S-"+i+"-"+k);
+    return {m:G("m"),d:G("d"),o:G("o"),b:g("b"),a:g("a"),e:g("e")};});
+}
+/* ajouter, supprimer, et redessiner sans replier les cartes ouvertes */
+function scenarRefresh(){
+  document.querySelectorAll(".scenarw").forEach(b=>{b.outerHTML=wScenar();});
+  fillF();ruban();
+}
+function momAdd(){
+  const n=nMom(); if(n>=NMOM_MAX) return;
+  F["S-n"]=n+1;saveF();scenarRefresh();
+}
+function momDel(i){
+  const n=nMom(); if(n<=1) return;
+  const K=["t","i","a","b","m","d","o","e","y"];
+  for(let j=i;j<n-1;j++) K.forEach(k=>{
+    const v=F["S-"+(j+1)+"-"+k];
+    if(v===undefined) delete F["S-"+j+"-"+k]; else F["S-"+j+"-"+k]=v;});
+  K.forEach(k=>delete F["S-"+(n-1)+"-"+k]);
+  F["S-n"]=n-1;saveF();scenarRefresh();
 }
 function ruban(){
   const rows=myRows(),d=diagSeq(rows);
   const band=(cls,vals,col,names)=>document.querySelectorAll(cls).forEach(box=>{
     box.innerHTML=vals.map((x,i)=>x===null?`<span class="vide">${i+1}</span>`
       :`<span style="background:${col[x]}">${esc(names[x])}</span>`).join("");});
-  band(".rubanbox",rows.map(r=>r.m),MODCOL,MODALITES);
+  /* une case par moment ; plusieurs valeurs se partagent la case */
+  const bandM=(cls,vals,col,names)=>document.querySelectorAll(cls).forEach(box=>{
+    box.innerHTML=vals.map((a,i)=>!a.length?`<span class="vide">${i+1}</span>`
+      :`<span class="grp">${a.map(x=>`<i style="background:${col[x%col.length]}" title="${esc(names[x])}">${esc(names[x])}</i>`).join("")}</span>`).join("");});
+  bandM(".rubanbox",rows.map(r=>r.m),MODCOL,MODALITES);
   band(".bloombox",rows.map(r=>r.b),BLOOMCOL,BLOOM);
+  bandM(".dispobox",rows.map(r=>r.d),["#0B1C8F","#2572FF","#157A58","#C77700","#8893A8","#6E7684","#E30613"],DISPOSITIONS);
   band(".abcbox",rows.map(r=>r.a),ABCCOL,ABC);
   document.querySelectorAll(".rubmsgbox").forEach(m=>{
     const r=rubMsg(d);m.textContent=r[0];m.style.color=r[1];});
@@ -2183,16 +2240,25 @@ function ruban(){
       K(d.chg>=3,d.chg+" changement"+(d.chg>1?"s":"")+" de configuration · il en faut 3");});
 }
 function selL(k,arr,lab){return `<label class="sl"><span>${esc(lab)}</span>${sel(k,arr,"—")}</label>`;}
+function mchips(k,arr,lab){
+  return `<div class="ml"><span class="mll">${esc(lab)}</span>
+   <div class="mch">${arr.map((x,v)=>`<button type="button" class="mc${mhas(k,v)?" on":""}" data-mt="${k}|${v}">${esc(x)}</button>`).join("")}</div></div>`;
+}
 function wScenar(){
+  const n=nMom();
   let r="";
-  for(let i=0;i<NMOM;i++) r+=`<div class="momc"><div class="momh"><span class="momn">${i+1}</span>
+  for(let i=0;i<n;i++) r+=`<div class="momc"><div class="momh"><span class="momn">${i+1}</span>
     <div class="momt">${ta("S-"+i+"-t","Le moment…",56)}</div>
-    <div class="momi">${ta("S-"+i+"-i","L'intention : ce que l'élève cherche, comprend ou produit…",56)}</div></div>
+    <div class="momi">${ta("S-"+i+"-i","L'intention : ce que l'élève cherche, comprend ou produit…",56)}</div>
+    <button type="button" class="momx" data-momdel="${i}" title="Supprimer ce moment"${n<=1?" disabled":""}>✕</button></div>
     <div class="moms">${selL("S-"+i+"-a",ABC,"Type d'activité")}${selL("S-"+i+"-b",BLOOM,"Niveau visé")}
-      ${selL("S-"+i+"-m",MODALITES,"Modalité")}${selL("S-"+i+"-d",DISPOSITIONS,"Salle")}
-      ${selL("S-"+i+"-o",OUTILS,"Outil de la salle")}${selL("S-"+i+"-e",EVALPAR,"Qui évalue")}
-      ${selL("S-"+i+"-y",EVALTYPE,"Type d'évaluation")}</div></div>`;
-  return `<div class="mine"><h4>La situation-problème qui ouvre la séquence</h4>
+      ${selL("S-"+i+"-e",EVALPAR,"Qui évalue")}${selL("S-"+i+"-y",EVALTYPE,"Type d'évaluation")}</div>
+    <div class="momm">${mchips("S-"+i+"-m",MODALITES,"Modalités")}
+      ${mchips("S-"+i+"-d",DISPOSITIONS,"Dispositions de la salle")}
+      ${mchips("S-"+i+"-o",OUTILS,"Outils de la salle")}</div></div>`;
+  r+=`<div class="acts" style="margin:4px 0 2px"><button class="btn sm" id="momAdd"${n>=NMOM_MAX?" disabled":""}>+ Ajouter un moment</button>
+    <span class="hint2">${n} moment${n>1?"s":""} · ${NMOM_MAX} au maximum</span></div>`;
+  return `<div class="mine scenarw"><h4>La situation-problème qui ouvre la séquence</h4>
    <p class="hint">La question telle que les élèves l'entendront, et l'obstacle qu'elle vise. Tant que les deux ne sont pas écrits, le reste ne sert à rien.</p>
    <div class="cols2">
      <div><label ${LBL}>La question, telle que les élèves l'entendront</label>${ta("S-pb","« … »",88)}</div>
@@ -2203,6 +2269,7 @@ function wScenar(){
    <h5 class="mur">Mes trois rubans et mes quatre compteurs</h5>
    <p class="hint">Tout se recalcule à mesure que vous remplissez les menus.</p>
    <div class="rublab">Modalités</div><div class="ruban rubanbox"></div><p class="rubmsg rubmsgbox"></p>
+   <div class="rublab">Dispositions de la salle</div><div class="ruban dispobox"></div>
    <div class="rublab">Types d'activité</div><div class="ruban abcbox" style="height:26px"></div>
    <div class="rublab">Niveaux visés</div><div class="ruban bloombox" style="height:26px"></div>
    <div class="cpt cptbox"></div>
@@ -2422,9 +2489,10 @@ function txt(ji,si,s){
     if(V("S-pb").trim())L.push("La situation-problème : "+V("S-pb").trim());
     if(V("S-ob").trim())L.push("L'obstacle visé : "+V("S-ob").trim());
     const g=(a,i,k)=>{const x=F["S-"+i+"-"+k];return (x===undefined||x==="")?"":a[+x];};
-    for(let i=0;i<NMOM;i++){const t=V("S-"+i+"-t").trim(),it=V("S-"+i+"-i").trim();
-      const c=[t,it,g(ABC,i,"a"),g(BLOOM,i,"b"),g(MODALITES,i,"m"),g(DISPOSITIONS,i,"d"),
-               g(OUTILS,i,"o"),g(EVALPAR,i,"e"),g(EVALTYPE,i,"y")];
+    const G=(a,i,k)=>mlab("S-"+i+"-"+k,a).join(" + ");
+    for(let i=0;i<nMom();i++){const t=V("S-"+i+"-t").trim(),it=V("S-"+i+"-i").trim();
+      const c=[t,it,g(ABC,i,"a"),g(BLOOM,i,"b"),G(MODALITES,i,"m"),G(DISPOSITIONS,i,"d"),
+               G(OUTILS,i,"o"),g(EVALPAR,i,"e"),g(EVALTYPE,i,"y")];
       if(c.some(Boolean))L.push("• "+c.map(x=>x||"—").join(" | "));}
     const d=diagSeq(myRows());
     L.push("Contrôles : "+d.nabc+" type(s) d'activité · "+d.haut+" moment(s) à analyser/évaluer/créer · "+
@@ -2688,10 +2756,11 @@ function exportSeq(){
   if(V("S-ob").trim())body+=wP("L'obstacle visé : "+V("S-ob").trim(),{s:19,i:1,af:160});
   const rows=['<w:tr>'+["Le moment","L'intention : côté élève","Type d'activité","Modalité · salle · outil","Évaluation"]
     .map((x,j)=>wCell([x],C[j],{b:1,s:17})).join("")+'</w:tr>'];
-  for(let i=0;i<NMOM;i++){
+  const LM=(a,i,k)=>mlab("S-"+i+"-"+k,a).join(" + ");
+  for(let i=0;i<nMom();i++){
     const t=V("S-"+i+"-t").trim(),it=V("S-"+i+"-i").trim();
     const ab=[L(ABC,i,"a"),L(BLOOM,i,"b")].filter(Boolean).join(" · ");
-    const md=[L(MODALITES,i,"m"),L(DISPOSITIONS,i,"d"),L(OUTILS,i,"o")].filter(Boolean).join(" · ");
+    const md=[LM(MODALITES,i,"m"),LM(DISPOSITIONS,i,"d"),LM(OUTILS,i,"o")].filter(Boolean).join(" · ");
     const ev=[L(EVALPAR,i,"e"),L(EVALTYPE,i,"y")].filter(x=>x&&x!=="—").join(" · ");
     if(!t&&!it&&!ab&&!md&&!ev)continue;
     rows.push('<w:tr>'+wCell([t||"—"],C[0],{s:17,b:1})+wCell([it||"—"],C[1],{s:17})+
@@ -2833,6 +2902,11 @@ document.addEventListener("change",e=>{
 });
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-go]");if(t){go(t.dataset.go);return;}
+  const mt=e.target.closest("[data-mt]");
+  if(mt){const [k,v]=mt.dataset.mt.split("|");mtog(k,+v);
+    mt.classList.toggle("on");stamp("S");ruban();return;}
+  const mx=e.target.closest("[data-momdel]");if(mx){momDel(+mx.dataset.momdel);return;}
+  if(e.target.id==="momAdd"){momAdd();return;}
   const tg=e.target.closest("[data-toggle]");if(tg){tg.closest(".card").classList.toggle("open");return;}
   const tm=e.target.closest("[data-timer]");if(tm){tkToggle(tm.dataset.timer,+tm.dataset.min);return;}
   const qb=e.target.closest("[data-quiz]");if(qb){openQuiz(qb.dataset.quiz);return;}
